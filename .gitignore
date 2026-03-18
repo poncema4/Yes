@@ -1,0 +1,57 @@
+# ========================
+# Compiled executables
+# ========================
+*.exe
+*.out
+*.o
+*.obj
+
+# ========================
+# Debug files
+# ========================
+*.pdb
+*.ilk
+*.map
+
+# ========================
+# VSCode (ignore everything)
+# ========================
+.vscode/*
+
+# ========================
+# Build directories
+# ========================
+build/*
+bin/*
+out/*
+
+# ========================
+# API keys & secrets
+# ========================
+.env
+.env.*
+*.env
+secrets.*
+config.secret.*
+apikeys.*
+api_keys.*
+credentials.*
+*.key
+*.pem
+*.p12
+*.pfx
+
+# ========================
+# Windows junk
+# ========================
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+ehthumbs.db
+
+# ========================
+# Compiler artifacts
+# ========================
+*.a
+*.lib
+*.dll
