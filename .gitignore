@@ -121,3 +121,35 @@ ehthumbs.db
 *~
 .fuse_hidden*
 .Trash-*
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# ========================
+# Java
+# ========================
+*.class
+*.jar
+*.war
+*.ear
+.classpath
+.project
+.settings/
+target/
+
+# ========================
+# AI editors
+# ========================
+.windsurf/
+.cursor/
+.aider*
