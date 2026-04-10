@@ -59,6 +59,7 @@ obj/
 # ========================
 .vscode/*
 !.vscode/extensions.json
+.vscode
 
 # ========================
 # Visual Studio
